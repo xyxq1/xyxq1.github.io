@@ -1,0 +1,592 @@
+@font-face {
+    font-family: "VCR OSD Mono";
+    src: url("fonts/VCR_OSD_MONO.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #080808;
+    color: white;
+    font-family: "VCR OSD Mono", monospace;
+}
+
+.game {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-bar {
+    width: 100%;
+    height: 70px;
+    padding: 0 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #1d1d1d;
+}
+
+.logo {
+    font-size: 20px;
+    letter-spacing: 3px;
+}
+
+.top-stats {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: 14px;
+}
+
+.coin-counter {
+    color: #888;
+}
+
+.coin-counter span {
+    color: #ffd75a;
+}
+
+.roll-counter {
+    color: #888;
+}
+
+.roll-counter span {
+    color: white;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+}
+
+.result {
+    text-align: center;
+}
+
+.result-label {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 12px;
+    letter-spacing: 3px;
+}
+
+#aura-name {
+    font-size: 52px;
+    font-weight: normal;
+    letter-spacing: -1px;
+}
+
+#aura-rarity {
+    margin-top: 10px;
+    color: #777;
+    font-size: 15px;
+}
+
+#roll-button {
+    width: 190px;
+    height: 55px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #fff;
+    color: #080808;
+    font-family: "VCR OSD Mono", monospace;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        opacity 0.15s ease;
+}
+
+#roll-button:hover:not(:disabled) {
+    background: #e8e8e8;
+    transform: translateY(-2px);
+}
+
+#roll-button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+#roll-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bottom-bar {
+    width: 100%;
+    height: 70px;
+    padding: 0 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #1d1d1d;
+}
+
+.bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-button {
+    padding: 10px 16px;
+    border: 1px solid #242424;
+    border-radius: 6px;
+    background: transparent;
+    color: #888;
+    font-family: "VCR OSD Mono", monospace;
+    font-size: 13px;
+    cursor: pointer;
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.menu-button:hover {
+    color: white;
+    border-color: #444;
+}
+
+.aura-glow {
+    text-shadow:
+        0 0 5px currentColor,
+        0 0 15px currentColor,
+        0 0 30px currentColor,
+        0 0 60px currentColor;
+    animation: auraGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes auraGlow {
+    from {
+        text-shadow:
+            0 0 5px currentColor,
+            0 0 15px currentColor,
+            0 0 30px currentColor;
+    }
+
+    to {
+        text-shadow:
+            0 0 10px currentColor,
+            0 0 25px currentColor,
+            0 0 50px currentColor,
+            0 0 80px currentColor;
+    }
+}
+
+#aura-name.aura-bounce {
+    animation: auraBounce 0.45s ease-out;
+}
+
+@keyframes auraBounce {
+    0% {
+        transform: scale(1);
+    }
+
+    45% {
+        transform: scale(1.08);
+    }
+
+    70% {
+        transform: scale(0.98);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.popup-overlay.active {
+    display: flex;
+}
+
+.popup {
+    width: 420px;
+    max-width: calc(100% - 40px);
+    padding: 30px;
+    border: 1px solid #303030;
+    border-radius: 10px;
+    background: #101010;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    animation: popupAppear 0.2s ease-out;
+}
+
+.popup h2 {
+    margin-bottom: 18px;
+    font-size: 28px;
+    font-weight: normal;
+}
+
+.popup p {
+    margin-bottom: 25px;
+    color: #999;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.okay-button {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 6px;
+    background: #d83232;
+    color: white;
+    font-family: "VCR OSD Mono", monospace;
+    font-size: 14px;
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.okay-button:hover:not(:disabled) {
+    background: #ef3c3c;
+}
+
+.okay-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+@keyframes popupAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.menu-overlay.active {
+    display: flex;
+}
+
+.menu-panel {
+    width: 500px;
+    max-width: calc(100% - 40px);
+    max-height: 75vh;
+    padding: 25px;
+    border: 1px solid #303030;
+    border-radius: 10px;
+    background: #101010;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+    animation: popupAppear 0.2s ease-out;
+}
+
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.menu-header h2 {
+    font-size: 24px;
+    font-weight: normal;
+}
+
+.close-button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #292929;
+    border-radius: 6px;
+    background: transparent;
+    color: #777;
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.close-button:hover {
+    color: white;
+    border-color: #444;
+}
+
+.aura-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.aura-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.aura-list::-webkit-scrollbar-track {
+    background: #151515;
+}
+
+.aura-list::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 5px;
+}
+
+.aura-entry {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 10px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #222;
+    border-radius: 6px;
+    background: #0c0c0c;
+}
+
+.aura-entry-name {
+    flex: 1;
+    font-size: 14px;
+}
+
+.aura-entry-rarity {
+    color: #666;
+    font-size: 12px;
+}
+
+.aura-entry-count {
+    min-width: 45px;
+    color: #999;
+    font-size: 14px;
+    text-align: right;
+}
+
+.sell-button {
+    min-width: 85px;
+    height: 32px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background: transparent;
+    color: #aaa;
+    font-family: "VCR OSD Mono", monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+.sell-button:hover {
+    color: #ffd75a;
+    border-color: #ffd75a;
+    background: rgba(255, 215, 90, 0.05);
+}
+
+.discovered-count {
+    margin-bottom: 15px;
+    color: #777;
+    font-size: 12px;
+}
+
+.stats-panel {
+    width: 460px;
+}
+
+.stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.stat-entry {
+    width: 100%;
+    min-height: 55px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #222;
+    border-radius: 6px;
+    background: #0c0c0c;
+    color: #888;
+    font-size: 13px;
+}
+
+.stat-entry span:last-child {
+    color: white;
+    text-align: right;
+}
+
+#stat-best-aura {
+    color: #888;
+}
+
+.top-stats {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.luck-counter {
+    color: #888;
+    font-size: 13px;
+}
+
+.luck-counter span {
+    color: white;
+}
+
+.roll-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.auto-roll-button {
+    min-width: 130px;
+    height: 52px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: #111;
+    color: white;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.auto-roll-button:hover {
+    background: #1b1b1b;
+}
+
+.auto-roll-button.active {
+    background: #1d5c42;
+    border-color: #2e8b63;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.shop-panel {
+    width: 520px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.shop-section {
+    margin-bottom: 22px;
+}
+
+.shop-section-title {
+    margin-bottom: 8px;
+    color: #777;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.shop-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    min-height: 72px;
+    padding: 12px 15px;
+    margin-bottom: 7px;
+    border: 1px solid #222;
+    border-radius: 6px;
+    background: #0c0c0c;
+}
+
+.shop-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.shop-item-name {
+    color: white;
+    font-size: 14px;
+}
+
+.shop-item-description {
+    color: #666;
+    font-size: 12px;
+}
+
+.shop-item-price {
+    color: #888;
+    font-size: 11px;
+}
+
+.shop-buy-button {
+    min-width: 95px;
+    height: 38px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background: #151515;
+    color: white;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.shop-buy-button:hover:not(:disabled) {
+    background: #202020;
+}
+
+.shop-buy-button:disabled {
+    color: #444;
+    cursor: not-allowed;
+}
+
+.shop-buy-button.owned {
+    border-color: #285c46;
+    background: #13271f;
+    color: #6fd4a5;
+}
+
+.shop-buy-button.maxed {
+    border-color: #444;
+    color: #777;
+}

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luckbound</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game">
+
+        <header class="top-bar">
+
+            <div class="logo">
+                LUCKBOUND
+            </div>
+
+            <div class="top-stats">
+
+                <div class="coin-counter">
+                    Coins: <span id="coins">0</span>
+                </div>
+
+                <div class="roll-counter">
+                    Rolls: <span id="rolls">0</span>
+                </div>
+
+                <div class="luck-counter">
+                    Luck: <span id="luck">1.00×</span>
+                </div>
+
+            </div>
+
+        </header>
+
+        <main class="main">
+
+            <section class="result">
+
+                <div class="result-label">
+                    YOU ROLLED
+                </div>
+
+                <h1 id="aura-name">
+                    ---
+                </h1>
+
+                <p id="aura-rarity">
+                    1 in ---
+                </p>
+
+            </section>
+
+            <div class="roll-controls">
+
+                <button id="roll-button">
+                    ROLL
+                </button>
+
+                <button id="auto-roll-button" class="auto-roll-button hidden">
+                    AUTO-ROLL
+                </button>
+
+            </div>
+
+        </main>
+
+        <footer class="bottom-bar">
+
+            <div class="bottom-left">
+
+                <button class="menu-button" id="inventory-button">
+                    Inventory
+                </button>
+
+                <button class="menu-button" id="discovered-button">
+                    Discovered
+                </button>
+
+                <button class="menu-button" id="stats-button">
+                    Stats
+                </button>
+
+                <button class="menu-button" id="shop-button">
+                    Shop
+                </button>
+
+            </div>
+
+            <button class="menu-button" id="settings-button">
+                Settings
+            </button>
+
+        </footer>
+
+    </div>
+
+    <div class="popup-overlay" id="slow-down-popup">
+
+        <div class="popup">
+
+            <h2>
+                Slow Down!
+            </h2>
+
+            <p>
+                You are clicking way too fast! We assume you have an autoclicker.
+                Please disable it and purchase Auto-Roll in the shop!
+            </p>
+
+            <button class="okay-button" id="okay-button" disabled>
+                Okay <span id="okay-timer">10</span>
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="menu-overlay" id="inventory-menu">
+
+        <div class="menu-panel">
+
+            <div class="menu-header">
+
+                <h2>
+                    Inventory
+                </h2>
+
+                <button class="close-button" id="inventory-close">
+                    ×
+                </button>
+
+            </div>
+
+            <div class="aura-list" id="inventory-list"></div>
+
+        </div>
+
+    </div>
+
+    <div class="menu-overlay" id="discovered-menu">
+
+        <div class="menu-panel">
+
+            <div class="menu-header">
+
+                <h2>
+                    Discovered
+                </h2>
+
+                <button class="close-button" id="discovered-close">
+                    ×
+                </button>
+
+            </div>
+
+            <div class="discovered-count" id="discovered-count">
+                0 / 17 Discovered
+            </div>
+
+            <div class="aura-list" id="discovered-list"></div>
+
+        </div>
+
+    </div>
+
+    <div class="menu-overlay" id="stats-menu">
+
+        <div class="menu-panel stats-panel">
+
+            <div class="menu-header">
+
+                <h2>
+                    Statistics
+                </h2>
+
+                <button class="close-button" id="stats-close">
+                    ×
+                </button>
+
+            </div>
+
+            <div class="stats-list">
+
+                <div class="stat-entry">
+                    <span>Total Rolls</span>
+                    <span id="stat-rolls">0</span>
+                </div>
+
+                <div class="stat-entry">
+                    <span>Coins</span>
+                    <span id="stat-coins">0</span>
+                </div>
+
+                <div class="stat-entry">
+                    <span>Best Aura</span>
+                    <span id="stat-best-aura">None</span>
+                </div>
+
+                <div class="stat-entry">
+                    <span>Best Rarity</span>
+                    <span id="stat-best-rarity">---</span>
+                </div>
+
+                <div class="stat-entry">
+                    <span>Auras Discovered</span>
+                    <span id="stat-discovered">0 / 17</span>
+                </div>
+
+                <div class="stat-entry">
+                    <span>Auras Sold</span>
+                    <span id="stat-sold">0</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="menu-overlay" id="shop-menu">
+
+        <div class="menu-panel shop-panel">
+
+            <div class="menu-header">
+
+                <h2>
+                    Shop
+                </h2>
+
+                <button class="close-button" id="shop-close">
+                    ×
+                </button>
+
+            </div>
+
+            <div class="shop-section">
+
+                <div class="shop-section-title">
+                    Luck
+                </div>
+
+                <div id="luck-shop-list"></div>
+
+            </div>
+
+            <div class="shop-section">
+
+                <div class="shop-section-title">
+                    Roll Speed
+                </div>
+
+                <div id="speed-shop-list"></div>
+
+            </div>
+
+            <div class="shop-section">
+
+                <div class="shop-section-title">
+                    Auto-Roll
+                </div>
+
+                <div id="auto-roll-shop-list"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
