@@ -2,7 +2,6 @@ const supabaseClient = window.supabase.createClient(
     "https://dwwjjwqowmfcblyaziwz.supabase.co",
     "sb_publishable_hZBVkmok-RYbUT38ZvQoYg_aWtGCk2G"
 );
-);
 
 let rolls = 0;
 let coins = 0;
@@ -109,7 +108,7 @@ async function login() {
     }
 
     const { error } =
-        await supabase.auth.signInWithPassword({
+        await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
         });
@@ -142,7 +141,7 @@ async function loadCloudSave() {
     const {
         data: { user },
         error: userError
-    } = await supabase.auth.getUser();
+    } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
         console.error("No logged-in user.");
@@ -639,7 +638,7 @@ async function saveGame() {
     const {
         data: { user },
         error: userError
-    } = await supabase.auth.getUser();
+    } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
         console.error("Cannot save: no logged-in user.");
@@ -1937,7 +1936,7 @@ shopMenu.addEventListener(
 async function checkExistingLogin() {
     const {
         data: { user }
-    } = await supabase.auth.getUser();
+    } = await supabaseClient.auth.getUser();
 
     if (!user) {
         return;
