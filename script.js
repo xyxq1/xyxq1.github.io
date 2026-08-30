@@ -60,11 +60,11 @@ async function createAccount() {
         return;
     }
 
-    const { data, error } =
-        await supabase.auth.signUp({
-            email: email,
-            password: password
-        });
+ const { data, error } =
+    await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+    });
 
     if (error) {
         alert(error.message);
