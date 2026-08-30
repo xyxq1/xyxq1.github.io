@@ -1,3 +1,8 @@
+const supabase = window.supabase.createClient(
+    "https://dwwjjwqowmfcblyaziwz.supabase.co",
+    "sb_publishable_hZBVkmok-RYbUT38ZvQoYg_aWtGCk2G"
+);
+
 let rolls = 0;
 let coins = 0;
 let aurasSold = 0;
@@ -21,6 +26,235 @@ let speedUpgradeIndex = 0;
 
 const SAVE_KEY = "luckboundSave";
 const AUTO_ROLL_PRICE = 500;
+
+
+function createDefaultSave() {
+    return {
+        version: 1,
+        rolls: 0,
+        coins: 0,
+        aurasSold: 0,
+        bestAura: null,
+        luck: 1,
+        rollSpeed: 1,
+        autoRollOwned: false,
+        luckUpgradeIndex: 0,
+        speedUpgradeIndex: 0,
+        inventory: {},
+        discovered: []
+    };
+}
+
+async function createAccount() {
+    const username =
+        document.getElementById("username-input").value.trim();
+
+    const email =
+        document.getElementById("email-input").value.trim();
+
+    const password =
+        document.getElementById("password-input").value;
+
+    if (!username || !email || !password) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const { data, error } =
+        await supabase.auth.signUp({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    const user = data.user;
+
+    if (!user) {
+        alert("Account created. Please check your email.");
+        return;
+    }
+
+    const { error: playerError } =
+        await supabase
+            .from("players")
+            .insert({
+                id: user.id,
+                username: username,
+                save: createDefaultSave()
+            });
+
+    if (playerError) {
+        alert(playerError.message);
+        return;
+    }
+
+    showGame();
+}
+
+async function login() {
+    const email =
+        document.getElementById("email-input").value.trim();
+
+    const password =
+        document.getElementById("password-input").value;
+
+    if (!email || !password) {
+        alert("Enter your email and password.");
+        return;
+    }
+
+    const { error } =
+        await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    await loadCloudSave();
+
+    showGame();
+}
+
+document
+    .getElementById("signup-button")
+    .addEventListener("click", createAccount);
+
+document
+    .getElementById("login-button")
+    .addEventListener("click", login);
+
+
+    function showGame() {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("game").style.display = "block";
+}
+
+async function loadCloudSave() {
+    const {
+        data: { user },
+        error: userError
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        console.error("No logged-in user.");
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from("players")
+        .select("save")
+        .eq("id", user.id)
+        .single();
+
+    if (error) {
+        console.error("Could not load save:", error);
+        return;
+    }
+
+    const saveData = data.save;
+
+    rolls =
+        Number.isFinite(Number(saveData.rolls))
+            ? Math.max(0, Math.floor(Number(saveData.rolls)))
+            : 0;
+
+    coins =
+        Number.isFinite(Number(saveData.coins))
+            ? Math.max(0, Number(saveData.coins))
+            : 0;
+
+    aurasSold =
+        Number.isFinite(Number(saveData.aurasSold))
+            ? Math.max(0, Math.floor(Number(saveData.aurasSold)))
+            : 0;
+
+    luck =
+        Number.isFinite(Number(saveData.luck))
+            ? Math.max(1, Number(saveData.luck))
+            : 1;
+
+    rollSpeed =
+        Number.isFinite(Number(saveData.rollSpeed))
+            ? Math.max(1, Number(saveData.rollSpeed))
+            : 1;
+
+    autoRollOwned =
+        saveData.autoRollOwned === true;
+
+    luckUpgradeIndex =
+        Number.isInteger(saveData.luckUpgradeIndex)
+            ? saveData.luckUpgradeIndex
+            : 0;
+
+    speedUpgradeIndex =
+        Number.isInteger(saveData.speedUpgradeIndex)
+            ? saveData.speedUpgradeIndex
+            : 0;
+
+    inventory = {};
+
+    if (
+        saveData.inventory &&
+        typeof saveData.inventory === "object"
+    ) {
+        for (const aura of auras) {
+            const amount =
+                Number(saveData.inventory[aura.name]);
+
+            if (
+                Number.isFinite(amount) &&
+                amount > 0
+            ) {
+                inventory[aura.name] =
+                    Math.floor(amount);
+            }
+        }
+    }
+
+    discovered.clear();
+
+    if (Array.isArray(saveData.discovered)) {
+        for (const auraName of saveData.discovered) {
+            if (
+                auras.some(
+                    aura => aura.name === auraName
+                )
+            ) {
+                discovered.add(auraName);
+            }
+        }
+    }
+
+    bestAura = null;
+
+    if (saveData.bestAura) {
+        bestAura =
+            auras.find(
+                aura =>
+                    aura.name === saveData.bestAura
+            ) || null;
+    }
+
+    updateRolls();
+    updateCoins();
+    updateLuckDisplay();
+    updateStats();
+    renderShop();
+
+    if (autoRollOwned) {
+        autoRollButton.classList.remove("hidden");
+    }
+
+    console.log("Luckbound cloud save loaded:", saveData);
+}
 
 const rollsElement = document.getElementById("rolls");
 const coinsElement = document.getElementById("coins");
@@ -400,7 +634,63 @@ function checkBestAura(aura) {
     }
 }
 
-function saveGame() {
+async function saveGame() {
+    const {
+        data: { user },
+        error: userError
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        console.error("Cannot save: no logged-in user.");
+        return;
+    }
+
+    const saveData = {
+        version: 1,
+        rolls: Number(rolls),
+        coins: Number(coins),
+        aurasSold: Number(aurasSold),
+
+        bestAura: bestAura
+            ? bestAura.name
+            : null,
+
+        luck: Number(luck),
+        rollSpeed: Number(rollSpeed),
+
+        autoRollOwned:
+            autoRollOwned === true,
+
+        luckUpgradeIndex:
+            Number(luckUpgradeIndex),
+
+        speedUpgradeIndex:
+            Number(speedUpgradeIndex),
+
+        inventory: {
+            ...inventory
+        },
+
+        discovered:
+            Array.from(discovered)
+    };
+
+    const { error } = await supabase
+        .from("players")
+        .update({
+            save: saveData,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", user.id);
+
+    if (error) {
+        console.error("Luckbound save failed:", error);
+        return;
+    }
+
+    console.log("Luckbound saved:", saveData);
+}
+
     const saveData = {
         version: 1,
         rolls: Number(rolls),
@@ -1689,13 +1979,25 @@ shopMenu.addEventListener(
     }
 );
 
-// loadGame();
+async function checkExistingLogin() {
+    const {
+        data: { user }
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        return;
+    }
+
+    await loadCloudSave();
+    showGame();
+}
+
+checkExistingLogin();
 
 updateRolls();
 updateCoins();
 updateLuckDisplay();
 updateStats();
-renderShop();
 
 // window.addEventListener(
 //     "beforeunload",
