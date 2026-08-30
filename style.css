@@ -590,3 +590,120 @@ body {
     border-color: #444;
     color: #777;
 }
+
+
+/* =========================
+   LUCKBOUND LOGIN SCREEN
+   ========================= */
+
+#login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 40%, rgba(100, 80, 255, 0.12), transparent 35%), #050509;
+    font-family: inherit;
+}
+
+    /* Main login box */
+    #login-screen::before {
+        content: "";
+        position: absolute;
+        width: 380px;
+        max-width: calc(100% - 40px);
+        height: 480px;
+        background: rgba(15, 15, 25, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.65), 0 0 40px rgba(100, 80, 255, 0.08);
+        backdrop-filter: blur(15px);
+        z-index: -1;
+    }
+
+    /* Logo / title */
+    #login-screen h1 {
+        margin: 0 0 35px;
+        font-size: 42px;
+        font-weight: 800;
+        letter-spacing: 5px;
+        color: white;
+        text-shadow: 0 0 20px rgba(150, 130, 255, 0.45);
+    }
+
+    /* Inputs */
+    #login-screen input {
+        width: 280px;
+        box-sizing: border-box;
+        padding: 14px 16px;
+        margin: 5px 0;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        outline: none;
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        font-size: 14px;
+        transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        #login-screen input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        #login-screen input:focus {
+            border-color: rgba(140, 120, 255, 0.7);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 0 3px rgba(120, 100, 255, 0.1);
+        }
+
+    /* Buttons */
+    #login-screen button {
+        width: 280px;
+        padding: 14px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+        #login-screen button:hover {
+            transform: translateY(-2px);
+            background: rgba(140, 120, 255, 0.25);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        #login-screen button:active {
+            transform: translateY(0);
+        }
+
+/* Create account button */
+#signup-button {
+    margin-top: 18px !important;
+    background: linear-gradient( 135deg, #7567ff, #9b72ff ) !important;
+    box-shadow: 0 8px 25px rgba(117, 103, 255, 0.2);
+}
+
+    #signup-button:hover {
+        box-shadow: 0 10px 30px rgba(117, 103, 255, 0.35) !important;
+    }
+
+/* Error / status message */
+#auth-message {
+    min-height: 20px;
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Hide game until logged in */
+#game {
+    display: none;
+}
