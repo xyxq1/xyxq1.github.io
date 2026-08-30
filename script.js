@@ -689,55 +689,9 @@ async function saveGame() {
     }
 
     console.log("Luckbound saved:", saveData);
+
 }
 
-    const saveData = {
-        version: 1,
-        rolls: Number(rolls),
-        coins: Number(coins),
-        aurasSold: Number(aurasSold),
-
-        bestAura: bestAura
-            ? bestAura.name
-            : null,
-
-        luck: Number(luck),
-        rollSpeed: Number(rollSpeed),
-
-        autoRollOwned:
-            autoRollOwned === true,
-
-        luckUpgradeIndex:
-            Number(luckUpgradeIndex),
-
-        speedUpgradeIndex:
-            Number(speedUpgradeIndex),
-
-        inventory: {
-            ...inventory
-        },
-
-        discovered:
-            Array.from(discovered)
-    };
-
-    try {
-        localStorage.setItem(
-            SAVE_KEY,
-            JSON.stringify(saveData)
-        );
-
-        console.log(
-            "Luckbound saved:",
-            saveData
-        );
-    } catch (error) {
-        console.error(
-            "Luckbound save failed:",
-            error
-        );
-    }
-}
 
 function loadGame() {
     try {
