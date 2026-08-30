@@ -1,6 +1,7 @@
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
     "https://dwwjjwqowmfcblyaziwz.supabase.co",
     "sb_publishable_hZBVkmok-RYbUT38ZvQoYg_aWtGCk2G"
+);
 );
 
 let rolls = 0;
