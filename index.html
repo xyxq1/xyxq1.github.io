@@ -8,12 +8,40 @@
 </head>
 <body>
 
-    <div class="game">
+    <div id="login-screen">
+
+        <h1>LUCKBOUND</h1>
+
+        <input id="username-input"
+               type="text"
+               placeholder="Username">
+
+        <input id="email-input"
+               type="email"
+               placeholder="Email">
+
+        <input id="password-input"
+               type="password"
+               placeholder="Password">
+
+        <button id="signup-button">
+            CREATE ACCOUNT
+        </button>
+
+        <button id="login-button">
+            LOGIN
+        </button>
+
+        <p id="auth-message"></p>
+
+    </div>
+
+    <div class="game" id="game">
 
         <header class="top-bar">
 
             <div class="logo">
-            LUCKBOUND
+                LUCKBOUND
             </div>
 
             <div class="top-stats">
@@ -269,6 +297,7 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="script.js"></script>
 </body>
 </html>
