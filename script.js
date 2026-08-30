@@ -79,8 +79,8 @@ async function createAccount() {
     }
 
     const { error: playerError } =
-        await supabase
-            .from("players")
+    await supabaseClient
+        .from("players")
             .insert({
                 id: user.id,
                 username: username,
@@ -148,8 +148,8 @@ async function loadCloudSave() {
         return;
     }
 
-    const { data, error } = await supabase
-        .from("players")
+    const { data, error } = await supabaseClient
+    .from("players")
         .select("save")
         .eq("id", user.id)
         .single();
@@ -675,8 +675,8 @@ async function saveGame() {
             Array.from(discovered)
     };
 
-    const { error } = await supabase
-        .from("players")
+  const { error } = await supabaseClient
+    .from("players")
         .update({
             save: saveData,
             updated_at: new Date().toISOString()
