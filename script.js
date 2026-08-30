@@ -148,18 +148,39 @@ async function loadCloudSave() {
         return;
     }
 
-   const { data, error } = await supabaseClient
+const { data, error } = await supabaseClient
     .from("players")
     .select("save")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
-    if (error) {
-        console.error("Could not load save:", error);
+if (error) {
+    console.error("Could not load save:", error);
+    return;
+}
+
+let saveData;
+
+if (!data) {
+    saveData = createDefaultSave();
+
+    const { error: insertError } = await supabaseClient
+        .from("players")
+        .insert({
+            id: user.id,
+            username: user.email.split("@")[0],
+            save: saveData
+        });
+
+    if (insertError) {
+        console.error("Could not create player:", insertError);
         return;
     }
 
-    const saveData = data.save;
+    console.log("Created new cloud save.");
+} else {
+    saveData = data.save;
+}
 
     rolls =
         Number.isFinite(Number(saveData.rolls))
