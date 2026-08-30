@@ -148,11 +148,11 @@ async function loadCloudSave() {
         return;
     }
 
-    const { data, error } = await supabaseClient
+   const { data, error } = await supabaseClient
     .from("players")
-        .select("save")
-        .eq("id", user.id)
-        .single();
+    .select("save")
+    .eq("id", user.id)
+    .single();
 
     if (error) {
         console.error("Could not load save:", error);
